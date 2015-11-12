@@ -1,0 +1,62 @@
+DNS Zonebackup from various sources:
+ - Powerdns SQL
+ - Powerdns API
+ - Powerdns.net API
+ - Dnsmadeeasy API
+ - other services?
+ - AXFR
+
+
+output in bind style format
+alsways ordered, so we can use git
+
+by default read api credentials / info from config file
+allow overrides
+
+output template: ${zonename}.txt
+/var/pdns/${name}/${zonename}.txt
+
+
+variables:
+${zonename}  :  
+${configname}:
+${timestampe}: unix timestamp
+${date}      : current date 
+${time}      : current time
+
+dnsbackup -w /tmp/zones -O main:verbose
+
+
+--test  : only test connectivity, don't do anything
+
+
+[default] #stuff in this section can be overridden in all providers
+#set with -w
+workdir=.
+
+#set wit -f
+filename=${zonename}.txt
+
+#set with -v
+verbose=no
+
+#set -i
+includedomainsregex=
+
+#set -e
+excludedomainsregex=
+
+#comma separated list of record types
+includetype=
+excludetype=
+
+#date format
+#time format
+
+[DME-1]
+provider=dnsmadeeasy
+apikey=
+secret=
+
+
+
