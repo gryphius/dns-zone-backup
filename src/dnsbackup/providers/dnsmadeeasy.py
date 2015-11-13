@@ -7,7 +7,7 @@ from time import strftime, gmtime
 import hashlib
 import hmac
 import time
-
+import logging
 
 class DMEApi(ProviderBase):
     def __init__(self):
@@ -16,9 +16,21 @@ class DMEApi(ProviderBase):
         self.configvars['secret']=None
         self.api = None
         self.zone_id_map={}
+        self.logger=logging.getLogger('dnsbackup.dme')
 
     def lint(self):
-        pass
+        try:
+            self.pepare()
+        except Exception,e:
+            print "DME API connect failed: %s"%(str(e))
+            return False
+
+        if len (self.zone_id_map)==0:
+            print "No domains found - does your subscription include API access?"
+            return False
+
+        return True
+
 
     def get_zones(self):
         return sorted(self.zone_id_map.keys())
@@ -47,8 +59,12 @@ class DMEApi(ProviderBase):
         self.api=DME2(self.configvars['apikey'],self.configvars['secret'])
 
         domains  = self.api.get_domains()
+        domaincount = len(domains)
+        self.logger.debug('Found %s domains'%domaincount)
         if len(domains)>100:
+            self.logger.debug('Enabling API rate limit')
             self.api.ratelimit=True
+
         for domaininfo in domains:
             zonename=domaininfo['name']
             zoneid=domaininfo['id']
