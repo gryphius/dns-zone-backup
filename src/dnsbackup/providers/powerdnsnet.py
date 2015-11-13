@@ -44,7 +44,12 @@ class PDNSNetApi(ProviderBase):
             #some records are broken in powerdnsnet's database :(
             if rec[2].text==None or rec[4].text==None:
                 continue
-            record.name=rec[2].text.lower()
+            recname=rec[2].text.lower()
+            if recname==zonename:
+                recname=''
+            else:
+                recname=recname[0:-len(zonename)-1]
+            record.name=recname
             record.zone=zonename
 
             record.type=rec[3].text.upper()
