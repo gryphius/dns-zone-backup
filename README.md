@@ -29,7 +29,7 @@ apikey=xxx-xxx-xxxx
 enabled=yes
 provider=axfr
 server=axfr1.dnsmadeeasy.com
-zones=demomail.ch
+zones=example.com,example.net,example.org
 
 [dnsmadeeasy]
 enabled=yes
