@@ -1,13 +1,41 @@
 dns zone backup
 ---------------
 
-This script allows you to create local file backups from your dns zones hosted on various external providers.
+This script makes local file backups from dns zones hosted on various external providers.
+
+This is not yet ready for production, there are a lot of places where the script will mess up trailing dots, relative hostnames etc.
 
 
 | provider     | description                              | status   |
 | ------------ | ---------------------------------------- | -------- |
-| powerdns-api | powerdns HTTP API                        | planned  |
-| powerdns-sql | powerdns SQL Database                    | planned  |
-| powerdns.net | powerdns.net SOAP API                    | planned  |
-| axfr         | AXFR                                     | planned  |
-| dme-api      | dnsmadeeasy.com REST API                 | beta     |
+| powerdnsapi  | powerdns HTTP API                        | planned  |
+| powerdnssql  | powerdns SQL Database                    | planned  |
+| powerdnsnet  | powerdns.net SOAP API                    | beta     |
+| axfr         | AXFR                                     | beta     |
+| dnsmadeeasy  | dnsmadeeasy.com REST API                 | beta     |
+
+configuration file example
+
+```
+[DEFAULT]
+filetemplate=/home/bob/my-dns-zones/${provider}/${zonename}.txt
+
+[pdnsnet]
+enabled=yes
+provider=powerdnsnet
+apikey=xxx-xxx-xxxx
+
+[axfr]
+enabled=yes
+provider=axfr
+server=axfr1.dnsmadeeasy.com
+zones=demomail.ch
+
+[dnsmadeeasy]
+enabled=yes
+provider=dnsmadeeasy
+apikey=xxx-xxx-xxx
+secret=yyy-yyy-yyy
+filetemplate=/home/bob/other-dns-zones/${zonename}.txt
+
+```
