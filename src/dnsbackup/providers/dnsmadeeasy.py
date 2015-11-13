@@ -47,6 +47,8 @@ class DMEApi(ProviderBase):
         self.api=DME2(self.configvars['apikey'],self.configvars['secret'])
 
         domains  = self.api.get_domains()
+        if len(domains)>100:
+            self.api.ratelimit=True
         for domaininfo in domains:
             zonename=domaininfo['name']
             zoneid=domaininfo['id']
@@ -63,6 +65,7 @@ class DME2(object):
         self.secret = secret
         self.baseurl = 'http://api.dnsmadeeasy.com/V2.0/'
         self.lastconnect = 0 # to stay below the request limit, we make only one request every 2.1 secs
+        self.ratelimit = False
 
     def _headers(self):
         currTime = self._get_date()
@@ -80,7 +83,7 @@ class DME2(object):
         return hmac.new(self.secret.encode(), rightnow.encode(), hashlib.sha1).hexdigest()
 
     def _rest_connect(self, resource, method, data=''):
-        while time.time()-self.lastconnect<2.1:
+        while self.ratelimit and time.time()-self.lastconnect<2.1:
             time.sleep(0.1)
             continue
         self.lastconnect=time.time()
