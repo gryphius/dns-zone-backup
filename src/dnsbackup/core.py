@@ -55,7 +55,8 @@ class DNSBackup(object):
         providers=[]
         for sec in runsections:
             providerinstance = self._init_provider(config,sec)
-            providers.append(providerinstance)
+            if providerinstance!=None:
+                providers.append(providerinstance)
         return providers
 
     def _init_provider(self,config,section):
@@ -65,6 +66,7 @@ class DNSBackup(object):
         provider=config.get(section,'provider').lower()
         if provider not in PROVIDERS:
             self.logger.error('config section %s unknown provider %s'%(section,provider))
+            return None
 
         providerinstance = PROVIDERS[provider]()
         providerinstance.configsection=section
